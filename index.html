@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust: Massive Clicker</title>
+    <style>
+        @import url('https://googleapis.com');
+        :root { --bg-color: #0b0c10; --panel-bg: rgba(15, 18, 26, 0.95); --rust-red: #ce422b; --gold: #ffb700; }
+        * { box-sizing: border-box; user-select: none; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-color);
+            background-image: linear-gradient(rgba(11, 12, 16, 0.6), rgba(11, 12, 16, 0.85)), 
+                              url('https://facepunch.com');
+            background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat;
+            color: #f1f3f7; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; padding-top: 20px;
+        }
+        .game-shell { width: 100%; max-width: 1000px; background: var(--panel-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 2px solid rgba(255, 255, 255, 0.08); border-top: 6px solid var(--rust-red); border-radius: 28px; padding: 25px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.85); }
+        .game-title { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 28px; letter-spacing: 3px; margin-bottom: 20px; background: linear-gradient(135deg, #fff, var(--rust-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; text-align: center; }
+        .tabs-menu { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 25px; }
+        .tab-btn { background: rgba(0, 0, 0, 0.6); color: #9aa1b5; border: 1px solid rgba(255,255,255,0.05); padding: 18px 2px; font-weight: 800; font-size: 15px; cursor: pointer; text-transform: uppercase; border-radius: 14px; transition: all 0.15s; text-align: center; }
+        .tab-btn.active { background: var(--rust-red); color: #fff; box-shadow: 0 6px 16px rgba(206, 66, 43, 0.4); border-color: var(--rust-red); transform: translateY(-2px); }
+        .balance-card { background: rgba(0, 0, 0, 0.7); border-radius: 20px; padding: 20px; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .balance-icon { font-size: 38px; }
+        .balance-amount { font-family: 'Orbitron', sans-serif; font-size: 38px; font-weight: 900; color: var(--gold); }
+        .click-wrapper { position: relative; width: 240px; height: 200px; margin: 15px auto 25px auto; display: flex; align-items: center; justify-content: center; }
+        .glow-effect { position: absolute; width: 160px; height: 140px; background: var(--rust-red); filter: blur(45px); border-radius: 50%; opacity: 0.35; }
+        .character-target { position: relative; z-index: 2; font-size: 130px; cursor: pointer; transition: transform 0.05s ease; width: 180px; height: 150px; display: flex; align-items: center; justify-content: center; }
+        .character-target:active { transform: scale(0.88); }
+        .btn { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 16px; color: #fff; background: linear-gradient(135deg, var(--rust-red), #912b1b); border: none; border-radius: 18px; padding: 20px; width: 100%; cursor: pointer; box-shadow: 0 6px 16px rgba(206, 66, 43, 0.2); transition: all 0.15s; letter-spacing: 0.5px; text-transform: uppercase; }
+        .btn:hover { filter: brightness(1.1); }
+        .btn:active { transform: scale(0.98); }
+        .btn-green { background: linear-gradient(135deg, #577e34, #3b5623); box-shadow: 0 6px 16px rgba(87, 126, 52, 0.2); }
+        .btn-orange { background: linear-gradient(135deg, #cc5a1b, #963f10); box-shadow: 0 6px 16px rgba(204, 90, 27, 0.2); }
+        .btn-secondary { background: rgba(255,255,255,0.07); box-shadow: none; border: 1px solid rgba(255,255,255,0.1); margin-top: 15px; padding: 16px; font-size: 14px; }
+        .info-box { background: rgba(0,0,0,0.5); padding: 20px; border-radius: 18px; text-align: left; font-size: 14px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.04); line-height: 1.6; }
+        .hp-bar { background: #121318; height: 26px; width: 100%; position: relative; border-radius: 10px; overflow: hidden; margin-top: 8px; border: 1px solid #252830; }
+        .hp-fill { background: var(--rust-red); height: 100%; width: 100%; transition: width 0.2s; }
+        .hp-text { position: absolute; width: 100%; text-align: center; font-size: 13px; font-weight: 800; line-height: 26px; top: 0; color: #fff; text-shadow: 1px 1px 2px #000; }
+        ul { list-style: none; display: grid; grid-template-columns: 1fr; gap: 10px; }
+        @media(min-width: 768px) { .server-grid-list { grid-template-columns: 1fr 1fr !important; } }
+        li { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06); border-left: 6px solid var(--rust-red); padding: 16px; border-radius: 14px; font-size: 15px; }
+        .game-panel { display: none; }
+        .game-panel.active { display: block; }
+        input { padding: 18px; width: 100%; background: rgba(0,0,0,0.5); color: #fff; border: 2px solid rgba(255,255,255,0.1); text-align: center; font-size: 18px; border-radius: 18px; margin-bottom: 20px; outline: none; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="game-shell">
+        <div class="game-title">Rust: Evolution</div>
+        <div id="auth-box" style="padding: 15px 0;">
+            <input type="text" id="username-input" placeholder="Введите ваш ник" maxlength="12">
+            <button class="btn btn-green" onclick="registerPlayer()">ПРОСНУТЬСЯ НА ПЛЯЖЕ</button>
+        </div>
+        <div id="main-game" style="display: none;">
+            <div class="tabs-menu">
+                <button class="tab-btn active" id="tab-farm" onclick="switchTab('farm')">⛏️Тап</button>
+                <button class="tab-btn" id="tab-base" onclick="switchTab('base')">⛺База</button>
+                <button class="tab-btn" id="tab-raid" onclick="switchTab('raid')">💣Рейд</button>
+                <button class="tab-btn" id="tab-casino" onclick="switchTab('casino')">🎰Казино</button>
+                <button class="tab-btn" id="tab-top" onclick="switchTab('top')">🏆Топ</button>
+            </div>
+
+            <div class="balance-card">
+                <span class="balance-icon">🥫</span>
+                <div class="balance-amount" id="my-scrap">0</div>
+            </div>
+
+            <!-- ВКЛАДКА ТАП -->
+            <div id="panel-farm" class="game-panel active">
+                <div style="font-size: 11px; color: #848a9e; text-transform: uppercase; font-weight: 700; text-align:center; margin-bottom:5px;">
+                    В руках: <span id="tool-name" style="color: var(--gold);">Камень</span>
+                </div>
+                <div class="click-wrapper"><div class="glow-effect"></div><div class="character-target" id="mining-target" onclick="farmScrap(event)">🪨</div></div>
+                
+                <div class="info-box" style="border-left: 4px solid var(--gold);">
+                    <div style="font-weight: 800; color: #fff; margin-bottom: 3px;" id="up-title">Улучшение оружия</div>
+                    <div style="color: #a2a8bd;" id="up-desc">Каждый клик начнет приносить больше ресурсов!</div>
+                </div>
+                <button class="btn" id="btn-tool-up" onclick="upgradeTool()">Прокачать оружие</button>
+                <button class="btn btn-green btn-secondary" onclick="buyFurnace()">🔥 Скрафтить Печку (-60 Скрапа) [<span id="furnace-count">0</span> шт]</button>
+            </div>
+
+            <!-- ВКЛАДКА БАЗА -->
+            <div id="panel-base" class="game-panel">
+                <div class="info-box">
+                    <div style="font-weight:700;">МАТЕРИАЛ СТЕН: <span id="my-tier" style="color:var(--rust-red);">ДЕРЕВО</span></div>
+                    <div class="hp-bar"><div class="hp-fill" id="my-hp-fill"></div><div class="hp-text" id="my-hp-text">100/100 HP</div></div>
+                </div>
+                <button class="btn" onclick="upgradeBase()">🔨 Округлить и улучшить стены базы (-50 🥫)</button>
+                <button class="btn btn-secondary" onclick="resetCharacter()" style="background:#cd412b1a; border-color: rgba(206,66,43,0.3); color:#ff8888;">💀 СБРОСИТЬ ПЕРСОНАЖА</button>
+            </div>
+
+            <!-- ВКЛАДКА РЕЙД (Стены, ХП и базы жертв) -->
+            <div id="panel-raid" class="game-panel">
+                <div class="info-box" style="text-align:center; margin-bottom: 10px;">
+                    <div style="color:#848a9e;">САЧЕЛИ В ИНВЕНТАРЕ:</div>
+                    <div style="font-family:'Orbitron'; font-size:18px; font-weight:900; color:#fff;">💣 <span id="satchel-count">0</span> ШТ</div>
+                </div>
+                <button class="btn" onclick="buySatchel()">Скрафтить Сачель (-40 Скрапа)</button>
+                
+                <div id="raid-zone" style="display: none; margin-top: 12px; padding: 12px; border: 2px dashed var(--rust-red); border-radius: 12px; background: rgba(0,0,0,0.3); text-align:center;">
+                    <div style="font-size: 11px; margin-bottom: 6px;">ВЗРЫВАЕМ БАЗУ: <span id="target-name" style="color:var(--gold);">-</span></div>
+                    <div class="hp-bar"><div class="hp-fill" id="target-hp-fill"></div><div class="hp-text" id="target-hp-text">0/0 HP</div></div>
+                    <button class="btn" onclick="throwSatchel()" style="margin-top: 8px;">КИНУТЬ САЧЕЛЬЮ (-45 HP)</button>
+                </div>
+
+                <div style="color:var(--rust-red); font-size:11px; font-weight:800; margin-top:15px; text-transform:uppercase;">🗺️ Тактическая карта баз (PvP):</div>
+                <ul id="server-raid-list" class="server-grid-list" style="margin-top:8px;"></ul>
+            </div>
+
+            <!-- ВКЛАДКА КАЗИНО -->
+            <div id="panel-casino" class="game-panel">
+                <div class="info-box" style="text-align:center; padding: 20px 10px;">
+                    <div style="font-size: 26px; letter-spacing: 5px; margin-bottom: 10px;" id="slots-display">🎰 | 🎰 | 🎰</div>
+                    <div style="color: var(--gold); font-weight:700; font-size:12px;" id="casino-status">Испытай удачу в Колесе Смерти!</div>
+                </div>
+                <button class="btn" onclick="spinSlots()" style="background: linear-gradient(135deg, #ff7b00, #b85e29);">КРУТИТЬ СЛОТЫ (-25 🥫)</button>
+            </div>
+
+            <!-- ВКЛАДКА ТОП (Только скрап) -->
+            <div id="panel-top" class="game-panel">
+                <div style="color:var(--gold); font-size:11px; font-weight:800; text-transform:uppercase; margin-bottom:8px;">🏆 ТОП ПО СКРАПУ НА СЕРВЕРЕ:</div>
+                <button class="btn btn-secondary" onclick="loadServerData()" style="margin-top:0; margin-bottom: 8px;">🔄 Обновить таблицу лидеров</button>
+                <ul id="server-players" class="server-grid-list"></ul>
+            </div>
+
+            <!-- ЛЕНТА СОБЫТИЙ -->
+            <div style="background: rgba(0,0,0,0.4); border-radius: 12px; padding: 10px; margin-top: 12px; text-align: left; font-size: 10px; border: 1px solid rgba(255,255,255,0.02);">
+                <div style="color: var(--rust-red); font-weight: 800; margin-bottom: 2px;">📢 СОБЫТИЯ ОСТРОВА:</div>
+                <div id="raid-logs" style="color: #989eb3; font-family: monospace; max-height: 50px; overflow-y: auto;">Тишина...</div>
+            </div>
+        </div>
+    </div>
+<script>
+const BUCKET_ID = "rust_final_pve_pvp_2026_safe"; 
+const API_URL = `https://kvdb.io{BUCKET_ID}/rust_pvp_world`;
+
+const toolTiers = [
+    { name: "Обычный камень", power: 1, cost: 30, nextName: "Каменная кирка", nextPower: 3, emoji: "🪨" },
+    { name: "Каменная кирка", power: 3, cost: 90, nextName: "Железная кирка", nextPower: 7, emoji: "⛏️" },
+    { name: "Железная кирка", power: 7, cost: 250, nextName: "Self-ледоруб", nextPower: 15, emoji: "🔨" },
+    { name: "Self-ледоруб", power: 15, cost: 0, nextName: "МАКСИМУМ", nextPower: 15, emoji: "🪓" }
+];
+let allPlayers = {}, myData = { name: "", score: 0, hp: 100, maxHp: 100, tier: "ДЕРЕВО", toolIndex: 0, furnaces: 0, satchels: 0 }, currentRaidTarget = null, isFullyLoaded = false; 
+
+async function loadServerData() {
+    try { 
+        const res = await fetch(API_URL); 
+        if (res.ok) { 
+            allPlayers = await res.json(); 
+            if (myData.name && allPlayers[myData.name]) { myData = allPlayers[myData.name]; } 
+        } 
+    } catch(e) { console.log("Сетевой лаг"); }
+    updateMyUi(); renderLists(); 
+}
+async function checkSavedLocalPlayer() {
+    const savedName = localStorage.getItem("rust_player_name");
+    if (savedName) {
+        myData.name = savedName; await loadServerData(); 
+        document.getElementById("auth-box").style.display = "none"; document.getElementById("main-game").style.display = "block";
+        isFullyLoaded = true; updateMyUi();
+        setInterval(saveMyData, 4000); setInterval(runFurnaces, 1000);
+    }
+}
+async function registerPlayer() {
+    const name = document.getElementById("username-input").value.trim().toUpperCase(); if (!name) return alert("Ник!");
+    myData.name = name; localStorage.setItem("rust_player_name", name);
+    await loadServerData(); document.getElementById("auth-box").style.display = "none"; document.getElementById("main-game").style.display = "block";
+    isFullyLoaded = true; saveMyData(); updateMyUi();
+    setInterval(saveMyData, 4000); setInterval(runFurnaces, 1000);
+}
+function saveMyData() { if (!myData.name || !isFullyLoaded) return; allPlayers[myData.name] = myData; try { fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(allPlayers) }); } catch(e) {} }
+function resetCharacter() { if(confirm("Стереть персонажа? Весь прогресс будет уничтожен!")) { localStorage.removeItem("rust_player_name"); location.reload(); } }
+function switchTab(tabName) { document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(`panel-${tabName}`).classList.add('active'); document.getElementById(`tab-${tabName}`).classList.add('active'); }
+function farmScrap(event) {
+    if (!isFullyLoaded) return;
+    const tool = toolTiers[myData.toolIndex]; myData.score += tool.power;
+    const p1 = document.createElement("div"); p1.innerText = `+${tool.power}`; p1.style.position = "absolute"; p1.style.left = (event.clientX - 10) + "px"; p1.style.top = (event.clientY - 20) + "px"; p1.style.color = "#ffcc00"; p1.style.fontWeight = "bold"; p1.style.pointerEvents = "none"; p1.style.transition = "all 0.4s"; p1.style.zIndex="999"; document.body.appendChild(p1);
+    setTimeout(() => { p1.style.transform = "translateY(-30px)"; p1.style.opacity = "0"; setTimeout(() => p1.remove(), 400); }, 10); updateMyUi();
+}
+function runFurnaces() { if (myData.furnaces > 0 && isFullyLoaded) { myData.score += myData.furnaces; updateMyUi(); } }
+function buyFurnace() { if (myData.score >= 60 && isFullyLoaded) { myData.score -= 60; myData.furnaces += 1; updateMyUi(); saveMyData(); } }
+function buySatchel() { if (myData.score >= 40 && isFullyLoaded) { myData.score -= 40; myData.satchels += 1; updateMyUi(); saveMyData(); } }
+function upgradeTool() { const currentTool = toolTiers[myData.toolIndex]; if (currentTool.cost === 0) return; if (myData.score >= currentTool.cost && isFullyLoaded) { myData.score -= currentTool.cost; myData.toolIndex += 1; updateMyUi(); saveMyData(); } else { alert("Не хватает скрапа!"); } }
+function upgradeBase() { if (myData.score >= 50 && isFullyLoaded) { myData.score -= 50; myData.maxHp += 100; myData.hp = myData.maxHp; if (myData.maxHp >= 400) myData.tier = "МЕТАЛЛ"; else if (myData.maxHp >= 200) myData.tier = "КАМЕНЬ"; updateMyUi(); saveMyData(); } else { alert("Не хватает скрапа!"); } }
+function spinSlots() {
+    if (myData.score < 25 || !isFullyLoaded) return alert("Нужно 25 скрапа!"); myData.score -= 25; const items = ["🥫", "💎", "💣", "🔥", "💀"];
+    const s1 = items[Math.floor(Math.random() * items.length)]; const s2 = items[Math.floor(Math.random() * items.length)]; const s3 = items[Math.floor(Math.random() * items.length)]; document.getElementById("slots-display").innerText = `${s1} | ${s2} | ${s3}`;
+    if (s1 === s2 && s2 === s3) { myData.score += 150; document.getElementById("casino-status").innerText = "🎉 ДЖЕКПОТ! +150 Скрапа!"; }
+    else if (s1 === s2 || s2 === s3 || s1 === s3) { myData.score += 40; document.getElementById("casino-status").innerText = "💵 Малый выигрыш! +40 Скрапа"; }
+    else { document.getElementById("casino-status").innerText = "❌ Проигрыш. Попробуй ещё!"; } updateMyUi(); saveMyData();
+}
+function updateMyUi() {
+    if (!myData.name) return;
+    document.getElementById("my-scrap").innerText = myData.score; document.getElementById("my-tier").innerText = myData.tier; document.getElementById("furnace-count").innerText = myData.furnaces; document.getElementById("satchel-count").innerText = myData.satchels;
+    const currentTool = toolTiers[myData.toolIndex]; document.getElementById("tool-name").innerText = currentTool.name; document.getElementById("mining-target").innerText = currentTool.emoji;
+    const upTitle = document.getElementById("up-title"); const upDesc = document.getElementById("up-desc"); const btnTool = document.getElementById("btn-tool-up");
+    if (currentTool.cost > 0) { upTitle.innerText = `Доступно: ${currentTool.nextName}`; upDesc.innerText = `Клик вырастет с +${currentTool.power} до +${currentTool.nextPower} скрапа.`; btnTool.innerText = `🔨 Скрафтить инструмент (-${currentTool.cost} 🥫)`; btnTool.style.display = "block"; }
+    else { upTitle.innerText = "Максимальный уровень!"; upDesc.innerText = `У вас лучший инструмент на сервере (+${currentTool.power} за клик).`; btnTool.style.display = "none"; }
+    document.getElementById("my-hp-fill").style.width = (myData.hp / myData.maxHp) * 100 + "%"; document.getElementById("my-hp-text").innerText = `${myData.hp}/${myData.maxHp} HP`;
+}
+function renderLists() {
+    const topList = document.getElementById("server-players"); const raidList = document.getElementById("server-raid-list"); topList.innerHTML = ""; raidList.innerHTML = "";
+    const arr = Object.values(allPlayers).filter(p => p && p.name).sort((a, b) => b.score - a.score);
+    if (arr.length === 0) { topList.innerHTML = "<li>На сервере пусто...</li>"; raidList.innerHTML = "<li>Баз для рейда не обнаружено.</li>"; return; }
+    arr.forEach((p, index) => {
+        topList.innerHTML += ` <li style="display:flex; justify-content:space-between; align-items:center;"> <span><b>#${index + 1}</b> ⛺ ${p.name}</span> <span style="color:var(--gold); font-weight:800; font-family:'Orbitron';">${p.score} 🥫</span> </li> `;
+        const raidBtn = p.name === myData.name ? `<span style="color:#577e34; font-size:10px; font-weight:bold;">⛺ Мой дом</span>` : `<button class="btn" style="width:auto; margin:0; padding:4px 8px; font-size:10px;" onclick="startRaid('${p.name}')">🚀 Рейд</button>`;
+        raidList.innerHTML += ` <li> <div style="display:flex; justify-content:space-between; align-items:center;"> <b>⛺ База: ${p.name}</b> ${raidBtn} </div> <div style="font-size:11px; color:#aaa; margin:4px 0;">Материал стен: <span style="color:#fff; font-weight:700;">${p.tier}</span></div> <div class="hp-bar"> <div class="hp-fill" style="width:${(p.hp/p.maxHp)*100}%"></div> <div class="hp-text">${p.hp}/${p.maxHp} HP</div> </div> </li> `;
+    });
+    if (allPlayers["_logs"]) document.getElementById("raid-logs").innerHTML = allPlayers["_logs"].map(l => `<div>${l}</div>`).join("");
+}
+function startRaid(tName) { currentRaidTarget = allPlayers[tName]; if (currentRaidTarget.hp <= 0) return alert("База уже уничтожена!"); document.getElementById("raid-zone").style.display = "block"; document.getElementById("target-name").innerText = currentRaidTarget.name; updateTargetUi(); }
+function updateTargetUi() { document.getElementById("target-hp-fill").style.width = (currentRaidTarget.hp / currentRaidTarget.maxHp) * 100 + "%"; document.getElementById("target-hp-text").innerText = `${currentRaidTarget.hp}/${currentRaidTarget.maxHp} HP`; }
+async function throwSatchel() {
+    if (!currentRaidTarget || myData.satchels <= 0 || !isFullyLoaded) return; myData.satchels -= 1; currentRaidTarget.hp -= 45; updateMyUi(); updateTargetUi();
+    if (currentRaidTarget.hp <= 0) {
+        currentRaidTarget.hp = 0; const stolen = Math.floor(currentRaidTarget.score / 3); currentRaidTarget.score -= stolen; myData.score += stolen;
+        if (!allPlayers["_logs"]) allPlayers["_logs"] = []; allPlayers["_logs"].unshift(`💥 ${myData.name} зарейдил ${currentRaidTarget.name} (+${stolen})`);
+        if (allPlayers["_logs"].length > 3) allPlayers["_logs"].pop(); document.getElementById("raid-zone").style.display = "none"; allPlayers[currentRaidTarget.name] = currentRaidTarget; saveMyData(); await loadServerData(); currentRaidTarget = null;
+    } else { allPlayers[currentRaidTarget.name] = currentRaidTarget; saveMyData(); }
+}
+document.addEventListener("DOMContentLoaded", () => { checkSavedLocalPlayer(); });
+</script>
+</body>
+</html>
