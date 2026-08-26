@@ -21,7 +21,6 @@
         .btn { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:16px; color:#fff; background:linear-gradient(135deg,var(--rust-red),#912b1b); border:none; border-radius:18px; padding:20px; width:100%; cursor:pointer; box-shadow:0 6px 16px rgba(206,66,43,0.2); text-transform:uppercase; }
         .btn:hover { filter:brightness(1.1); }
         .btn-green { background:linear-gradient(135deg,#577e34,#3b5623); }
-        .btn-orange { background:linear-gradient(135deg,#cc5a1b,#963f10); }
         .btn-secondary { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); margin-top:15px; padding:16px; font-size:14px; }
         .info-box { background:rgba(0,0,0,0.5); padding:20px; border-radius:18px; text-align:left; font-size:14px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.04); }
         .hp-bar { background:#121318; height:26px; width:100%; position:relative; border-radius:10px; overflow:hidden; margin-top:8px; border:1px solid #252830; }
@@ -33,7 +32,7 @@
         .game-panel { display:none; }
         .game-panel.active { display:block; }
         input { padding:18px; width:100%; background:rgba(0,0,0,0.5); color:#fff; border:2px solid rgba(255,255,255,0.1); text-align:center; font-size:18px; border-radius:18px; margin-bottom:20px; font-weight:700; outline:none; }
-        .icon-pic { width:32px; height:32px; object-fit:contain; }
+        .icon-text { font-size:32px; display:inline-block; vertical-align:middle; }
     </style>
 </head>
 <body>
@@ -51,10 +50,7 @@
                 <button class="tab-btn" id="tab-casino" onclick="switchTab('casino')">🎰Казино</button>
                 <button class="tab-btn" id="tab-top" onclick="switchTab('top')">🏆Топ</button>
             </div>
-            <div class="balance-card">
-                <img src="https://facepunch.com" class="icon-pic" style="width:42px; height:42px;">
-                <div class="balance-amount" id="my-scrap">0</div>
-            </div>
+            <div class="balance-card"><span class="icon-text">🥫</span><div class="balance-amount" id="my-scrap">0</div></div>
             <div id="panel-farm" class="game-panel active">
                 <div style="font-size:11px; color:#848a9e; text-transform:uppercase; font-weight:700; text-align:center; margin-bottom:5px;">В руках: <span id="tool-name" style="color:var(--gold);">Камень</span></div>
                 <div class="click-wrapper"><div class="glow-effect"></div><div class="character-target" id="mining-target" onclick="farmScrap(event)"></div></div>
@@ -63,11 +59,11 @@
                     <div style="color:#a2a8bd;" id="up-desc">Каждый клик начнет приносить больше ресурсов!</div>
                 </div>
                 <button class="btn" id="btn-tool-up" onclick="upgradeTool()">Прокачать оружие</button>
-                <button class="btn btn-green btn-secondary" onclick="buyFurnace()" style="display:flex; align-items:center; justify-content:center; gap:10px;"><img src="https://facepunch.com" class="icon-pic"> Скрафтить Печку (-60 Скрапа) [<span id="furnace-count">0</span> шт]</button>
+                <button class="btn btn-green btn-secondary" onclick="buyFurnace()"><span class="icon-text" style="font-size:20px;">🔥</span> Скрафтить Печку (-60 Скрапа) [<span id="furnace-count">0</span> шт]</button>
             </div>
             <div id="panel-base" class="game-panel">
                 <div class="info-box" style="display:flex; align-items:center; gap:15px;">
-                    <img src="https://facepunch.com" style="width:60px; height:60px; object-fit:contain;">
+                    <span class="icon-text" style="font-size:50px;">⛺</span>
                     <div style="flex:1;">
                         <div style="font-weight:700;">МАТЕРИАЛ СТЕН: <span id="my-tier" style="color:var(--rust-red);">ДЕРЕВО</span></div>
                         <div class="hp-bar"><div class="hp-fill" id="my-hp-fill"></div><div class="hp-text" id="my-hp-text">100/100 HP</div></div>
@@ -77,8 +73,8 @@
                 <button class="btn btn-secondary" onclick="resetCharacter()" style="background:#cd412b1a; color:#ff8888;">💀 СБРОСИТЬ ПЕРСОНАЖА</button>
             </div>
             <div id="panel-raid" class="game-panel">
-                <div class="info-box" style="display:flex; align-items:center; justify-content:center; gap:15px;"><img src="https://facepunch.com" style="width:50px; height:50px; object-fit:contain;"><div><div style="color:#848a9e; font-size:12px;">САЧЕЛИ В ИНВЕНТАРЕ:</div><div style="font-family:'Orbitron'; font-size:22px; font-weight:900; color:#fff;"><span id="satchel-count">0</span> ШТ</div></div></div>
-                <button class="btn" onclick="buySatchel()" style="display:flex; align-items:center; justify-content:center; gap:10px; background:linear-gradient(135deg,#cc5a1b,#963f10);"><img src="https://facepunch.com" class="icon-pic"> Скрафтить Сачель (-40 Скрапа)</button>
+                <div class="info-box" style="display:flex; align-items:center; justify-content:center; gap:15px;"><span class="icon-text" style="font-size:40px;">💣</span><div><div style="color:#848a9e; font-size:12px;">САЧЕЛИ В ИНВЕНТАРЕ:</div><div style="font-family:'Orbitron'; font-size:22px; font-weight:900; color:#fff;"><span id="satchel-count">0</span> ШТ</div></div></div>
+                <button class="btn" onclick="buySatchel()" style="display:flex; align-items:center; justify-content:center; gap:10px; background:linear-gradient(135deg,#cc5a1b,#963f10);"><span class="icon-text" style="font-size:20px;">💣</span> Скрафтить Сачель (-40 Скрапа)</button>
                 <div id="raid-zone" style="display:none; margin-top:12px; padding:12px; border:2px dashed var(--rust-red); border-radius:12px; background:rgba(0,0,0,0.3); text-align:center;">
                     <div style="font-size:11px; margin-bottom:6px;">ВЗРЫВАЕМ БАЗУ: <span id="target-name" style="color:var(--gold);">-</span></div>
                     <div class="hp-bar"><div class="hp-fill" id="target-hp-fill"></div><div class="hp-text" id="target-hp-text">0/0 HP</div></div>
@@ -108,10 +104,10 @@
 <script>
 const BUCKET_ID = "rust_final_pve_pvp_2026_safe";const API_URL = `https://kvdb.io{BUCKET_ID}/rust_pvp_world`;
 const toolTiers = [
-    { name:"Обычный камень", power:1, cost:30, nextName:"Каменная кирка", nextPower:3, img:"https://facepunch.com" },
-    { name:"Каменная кирка", power:3, cost:90, nextName:"Железная кирка", nextPower:7, img:"https://facepunch.com" },
-    { name:"Железная кирка", power:7, cost:250, nextName:"Self-ледоруб", nextPower:15, img:"https://facepunch.com" },
-    { name:"Self-ледоруб", power:15, cost:0, nextName:"МАКСИМУМ", nextPower:15, img:"https://facepunch.com" }
+    { name:"Обычный камень", power:1, cost:30, nextName:"Каменная кирка", nextPower:3, img:"data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 64 64'><path d='M32 6C20 6 12 16 16 28s12 24 16 30c4-6 12-18 16-30S44 6 32 6z' fill='%23666'/><circle cx='32' cy='24' r='6' fill='%23444'/></svg>" },
+    { name:"Каменная кирка", power:3, cost:90, nextName:"Железная кирка", nextPower:7, img:"data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 64 64'><path d='M10 50L50 10l4 4-40 40z' fill='%238B5A2B'/><path d='M44 6c-2 4-8 8-14 10l8 8c2-6 6-12 10-14z' fill='%23999'/></svg>" },
+    { name:"Железная кирка", power:7, cost:250, nextName:"Self-ледоруб", nextPower:15, img:"data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 64 64'><path d='M10 50L50 10l4 4-40 40z' fill='%23555'/><path d='M40 4c-4 6-12 10-18 12l6 6c2-6 8-14 12-18z' fill='%23ccc'/></svg>" },
+    { name:"Self-ледоруб", power:15, cost:0, nextName:"МАКСИМУМ", nextPower:15, img:"data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 64 64'><path d='M10 50L50 10l4 4-40 40z' fill='%23333'/><path d='M35 2c-5 8-15 12-22 14l4 4c7-2 15-9 18-18z' fill='%2300d2ff'/></svg>" }
 ];
 let allPlayers = {}, myData = { name:"", score:0, hp:100, maxHp:100, tier:"ДЕРЕВО", toolIndex:0, furnaces:0, satchels:0 }, currentRaidTarget = null, isFullyLoaded = false;
 async function loadServerData() { try { const res = await fetch(API_URL); if (res.ok) { allPlayers = await res.json(); if (myData.name && allPlayers[myData.name]) { myData = allPlayers[myData.name]; } } } catch(e) {} updateMyUi(); renderLists(); }
