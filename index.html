@@ -48,11 +48,9 @@
             <button class="tab-btn" onclick="openTab('casino')">🎰 Каз</button>
             <button class="tab-btn" onclick="openTab('top-players')">🏆 Топ</button>
         </div>
-        
         <div class="stats" style="font-size: 26px; font-weight: bold; margin: 5px 0; text-align:center; color: #f0ad4e;">
             <span id="scrap-img-place">🥫</span> Скрап: <span id="balance">0</span>
         </div>
-        
         <div id="tap" class="section active">
             <div style="font-size: 15px; color: #aaa; margin-bottom: 2px;">В руках: <span id="weapon-name" style="color:#fff; font-weight:bold;">Камень</span></div>
             <div class="image-container">
@@ -66,7 +64,6 @@
             <button id="upgrade-weapon" class="btn">Скрафтить инструмент 🔥</button>
             <button id="buy-furnace" class="btn" style="background-color: #4a4a5a; box-shadow: 0 4px #333; margin-top: 8px;">Скрафтить Печку (-60 🥫) [<span id="furnace-count">0</span> шт]</button>
         </div>
-
         <div id="base" class="section">
             <h3 style="color: #cd412b; margin-bottom: 15px;">⛺ ВАША БАЗА</h3>
             <p style="margin: 10px 0; font-size: 18px;">МАТЕРИАЛ СТЕН: <span id="wall-type" style="font-weight:bold; color:#f0ad4e;">ДЕРЕВО</span></p>
@@ -74,7 +71,6 @@
             <button id="upgrade-base" class="btn" style="margin-top: 15px;">🔨 Улучшить стены базы (-50 🥫)</button>
             <button id="reset-player" class="btn" style="background-color: #333; box-shadow: 0 4px #111; margin-top: 40px; font-size: 13px; padding: 8px;">💀 СБРОСИТЬ ПЕРСОНАЖА</button>
         </div>
-
         <div id="raid" class="section">
             <h3 style="color: #cd412b; margin-bottom: 15px;">💣 РЕЙДЫ ЧУЖИХ БАЗ</h3>
             <p style="margin: 10px 0; font-size: 18px;">💣 САЧЕЛИ В ИНВЕНТАРЕ: <span id="satchel-count" style="font-weight:bold; color:#f0ad4e;">0</span> ШТ</p>
@@ -83,14 +79,12 @@
             <p style="margin: 10px 0; font-size: 18px;">БАЗА ЧЕМПИОНА: <span id="enemy-hp" style="font-weight:bold; color:#d9534f;">500</span>/500 HP</p>
             <button id="throw-satchel" class="btn" style="background-color: #d9534f; box-shadow: 0 4px #ac2925; margin-top: 10px;">КИНУТЬ САЧЕЛЬЮ (-45 HP)</button>
         </div>
-
         <div id="casino" class="section">
             <h3 style="color: #f0ad4e; margin-bottom: 15px;">🎰 КОЛЕСО СМЕРТИ</h3>
             <div id="slots-result" style="font-size: 42px; margin: 20px 0; background: #121214; padding: 20px; border-radius: 8px; border: 1px dashed #3a3a47; letter-spacing: 5px;">🎰 | 🎰 | 🎰</div>
             <button id="spin-slots" class="btn" style="background-color: #f0ad4e; box-shadow: 0 4px #eea236; color: #000;">КРУТИТЬ СЛОТЫ (-25 🥫)</button>
             <div id="casino-status-text" class="casino-status casino-neutral">Испытай свою удачу!</div>
         </div>
-
         <div id="top-players" class="section">
             <h3 style="color: #f0ad4e; margin-bottom: 15px;">🏆 ТОП СЕРВЕРА ПО СКРАПУ</h3>
             <table class="leaderboard-table">
@@ -125,7 +119,6 @@
         window.openTab = function(tabId) {
             document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
             const targetSection = document.getElementById(tabId);
             if(targetSection) targetSection.style.display = 'flex';
             if(event && event.currentTarget) event.currentTarget.classList.add('active');
