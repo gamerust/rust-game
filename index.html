@@ -5,38 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rust: Massive Clicker</title>
     <style>
-        body {
-            background-color: #1e1e24;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-            user-select: none;
-        }
-        h1 {
-            color: #cd412b;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        #welcome-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), 
-                        url('https://unsplash.com') no-repeat center center/cover;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 100; transition: opacity 0.5s ease, visibility 0.5s;
-        }
-        .wake-up-btn {
-            background-color: #cd412b; color: white; border: none; padding: 20px 40px;
-            font-size: 24px; font-weight: bold; text-transform: uppercase; cursor: pointer;
-            border-radius: 5px; box-shadow: 0 6px #8a2b1d; margin-top: 20px;
-        }
-        .wake-up-btn:active { transform: translateY(4px); box-shadow: 0 2px #8a2b1d; }
+        body { background-color: #1e1e24; color: #fff; font-family: 'Arial', sans-serif; text-align: center; margin: 0; padding: 20px; user-select: none; }
+        h1 { color: #cd412b; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        #welcome-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('https://unsplash.com') no-repeat center center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
+        .wake-up-btn { background-color: #cd412b; color: white; border: none; padding: 20px 40px; font-size: 24px; font-weight: bold; text-transform: uppercase; cursor: pointer; border-radius: 5px; box-shadow: 0 6px #8a2b1d; margin-top: 20px; }
         #game-interface { display: none; }
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
         .tab-btn { background-color: #333; color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 5px; }
         .tab-btn.active { background-color: #cd412b; }
-        .section { display: none; background: #2a2a32; padding: 20px; border-radius: 10px; max-width: 500px; margin: 0 auto 20px auto; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .section { display: none; background: #2a2a32; padding: 20px; border-radius: 10px; max-width: 500px; margin: 0 auto 20px auto; }
         .section.active { display: block; }
         .click-target { width: 200px; height: 200px; object-fit: contain; cursor: pointer; transition: transform 0.05s ease; margin: 20px 0; }
         .click-target:active { transform: scale(0.92); }
@@ -45,60 +22,39 @@
     </style>
 </head>
 <body>
-
-    <!-- 🌊 Стартовый экран -->
     <div id="welcome-screen">
         <h1 style="font-size: 42px;">Rust: Massive Clicker</h1>
         <button id="wake-up-btn" class="wake-up-btn">ПРОСНУТЬСЯ НА ПЛЯЖЕ</button>
     </div>
-
-    <!-- 🎮 Основная игра -->
     <div id="game-interface">
         <h1>Rust: Evolution</h1>
-
-        <!-- Навигация -->
         <div class="tabs">
             <button class="tab-btn active" onclick="openTab('tap')">⛏ Тап</button>
             <button class="tab-btn" onclick="openTab('base')">⛺ База</button>
             <button class="tab-btn" onclick="openTab('raid')">💣 Рейд</button>
             <button class="tab-btn" onclick="openTab('casino')">🎰 Каз</button>
         </div>
-
-        <div class="stats" style="font-size: 28px; margin: 15px 0;">
-            🥫 Скрап: <span id="balance">0</span>
-        </div>
-
-        <!-- ВКЛАДКА: ТАП -->
+        <div class="stats" style="font-size: 28px; margin: 15px 0;">🥫 Скрап: <span id="balance">0</span></div>
         <div id="tap" class="section active">
             <div style="font-size: 18px; color: #aaa;">В руках: <span id="weapon-name">Камень</span></div>
             <img id="character" class="click-target" src="https://thunderstore.io" alt="Оружие">
             <p>Каждый клик приносит больше ресурсов!</p>
-            <button id="upgrade-weapon" class="btn">Прокачать оружие 🔥 (Цена: <span id="weapon-cost">15</span>)</button>
-            <br>
+            <button id="upgrade-weapon" class="btn">Прокачать оружие 🔥 (Цена: <span id="weapon-cost">15</span>)</button><br>
             <button id="buy-furnace" class="btn" style="background-color: #5c6370;">Скрафт Печку (-60 Скрапа) [<span id="furnace-count">0</span> шт]</button>
-            <div style="font-size: 14px; color: #aaa; margin-top: 5px;">Печки дают пассивный доход (+1/сек)</div>
         </div>
-
-        <!-- ВКЛАДКА: БАЗА -->
         <div id="base" class="section">
             <h3>⛺ ВАША БАЗА</h3>
             <p>МАТЕРИАЛ СТЕН: <span id="wall-type">ДЕРЕВО</span></p>
             <p>Здоровье базы: <span id="base-hp">100</span>/100 HP</p>
             <button id="upgrade-base" class="btn">🔨 Улучшить стены базы (-50 🥫)</button>
-            <button id="reset-player" class="btn" style="background-color: #444; margin-top: 20px;">💀 СБРОСИТЬ ПЕРСОНАЖА</button>
         </div>
-
-        <!-- ВКЛАДКА: РЕЙД -->
         <div id="raid" class="section">
             <h3>💣 РЕЙДЫ ЧУЖИХ БАЗ</h3>
             <p>САЧЕЛИ В ИНВЕНТАРЕ: <span id="satchel-count">0</span> ШТ</p>
-            <button id="craft-satchel" class="btn">💣 Скрафтить Сачель (-40 Скрапа)</button>
-            <hr style="border-color: #444; margin: 20px 0;">
+            <button id="craft-satchel" class="btn">💣 Скрафтить Сачель (-40 Скрапа)</button><hr style="border-color: #444; margin: 20px 0;">
             <p>ВЗРЫВАЕМ БАЗУ ЧЕМПИОНА: <span id="enemy-hp">500</span>/500 HP</p>
             <button id="throw-satchel" class="btn" style="background-color: #d9534f;">КИНУТЬ САЧЕЛЬЮ (-45 HP)</button>
         </div>
-
-        <!-- ВКЛАДКА: КАЗИНО -->
         <div id="casino" class="section">
             <h3>🎰 КОЛЕСО СМЕРТИ</h3>
             <div id="slots-result" style="font-size: 32px; margin: 20px 0;">🎰 | 🎰 | 🎰</div>
@@ -106,9 +62,7 @@
         </div>
     </div>
     <script>
-        let balance = 0; let clickPower = 1; let weaponLevel = 0; let furnaces = 0;
-        let baseLevel = 0; let baseHp = 100; let satchels = 0; let enemyHp = 500;
-
+        let balance = 0; let clickPower = 1; let weaponLevel = 0; let furnaces = 0; let baseLevel = 0; let baseHp = 100; let satchels = 0; let enemyHp = 500;
         const weapons = [
             { name: "Камень", cost: 15, power: 1, img: "https://thunderstore.io" },
             { name: "Каменный топор", cost: 100, power: 3, img: "https://facepunch.com" },
@@ -116,22 +70,21 @@
             { name: "Штурмовая винтовка (АК-47)", cost: 2000, power: 50, img: "https://facepunch.com" }
         ];
         const baseMaterials = ["ДЕРЕВО", "КАМЕНЬ", "МЕТАЛЛ", "МВК"];
-
         const welcomeScreen = document.getElementById('welcome-screen');
         const wakeUpBtn = document.getElementById('wake-up-btn');
         const gameInterface = document.getElementById('game-interface');
 
         if (wakeUpBtn) {
             wakeUpBtn.addEventListener('click', () => {
-                welcomeScreen.style.opacity = '0';
-                setTimeout(() => { welcomeScreen.style.display = 'none'; gameInterface.style.display = 'block'; }, 500);
+                if (welcomeScreen) welcomeScreen.style.display = 'none';
+                if (gameInterface) gameInterface.style.display = 'block';
             });
         }
 
         window.openTab = function(tabId) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+            document.getElementById(tabId).style.display = 'block';
             event.currentTarget.classList.add('active');
         };
 
@@ -158,19 +111,15 @@
         }
 
         document.getElementById('character').addEventListener('click', () => { balance += clickPower; updateUI(); });
-
         document.getElementById('upgrade-weapon').addEventListener('click', () => {
             if (weaponLevel < weapons.length && balance >= weapons[weaponLevel].cost) {
                 balance -= weapons[weaponLevel].cost; weaponLevel++;
-                clickPower = (weaponLevel < weapons.length) ? weapons[weaponLevel].power : 50;
-                updateUI();
+                clickPower = (weaponLevel < weapons.length) ? weapons[weaponLevel].power : 50; updateUI();
             }
         });
-
         document.getElementById('buy-furnace').addEventListener('click', () => { if (balance >= 60) { balance -= 60; furnaces++; updateUI(); } });
         document.getElementById('upgrade-base').addEventListener('click', () => { if (balance >= 50 && baseLevel < 3) { balance -= 50; baseLevel++; baseHp += 100; updateUI(); } });
         document.getElementById('craft-satchel').addEventListener('click', () => { if (balance >= 40) { balance -= 40; satchels++; updateUI(); } });
-
         document.getElementById('throw-satchel').addEventListener('click', () => {
             if (satchels > 0 && enemyHp > 0) {
                 satchels--; enemyHp -= 45;
@@ -178,7 +127,6 @@
                 updateUI();
             }
         });
-
         document.getElementById('spin-slots').addEventListener('click', () => {
             if (balance >= 25) {
                 balance -= 25; const icons = ["🥫", "⛏", "💣", "💀"];
@@ -191,10 +139,6 @@
                 }
                 updateUI();
             }
-        });
-
-        document.getElementById('reset-player').addEventListener('click', () => {
-            if(confirm("Точно обнулиться?")) { balance = 0; clickPower = 1; weaponLevel = 0; furnaces = 0; baseLevel = 0; baseHp = 100; satchels = 0; enemyHp = 500; updateUI(); }
         });
 
         setInterval(() => { balance += furnaces; updateUI(); }, 1000);
