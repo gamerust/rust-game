@@ -10,40 +10,25 @@
             background-color: #1a1a1f; color: #fff; font-family: 'Segoe UI', Arial, sans-serif;
             text-align: center; user-select: none; width: 100vw; min-height: 100vh; padding: 15px;
         }
-        h1 { color: #cd412b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); margin-bottom: 10px; font-size: 26px; letter-spacing: 1px; }
-        
-        /* 🌊 СТАРТОВЫЙ ЭКРАН */
+        h1 { color: #cd412b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); margin-bottom: 10px; font-size: 26px; }
         #welcome-screen { 
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
             background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.95)), url('https://unsplash.com') no-repeat center center/cover; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; 
         }
-        .wake-up-btn { background-color: #cd412b; color: white; border: none; padding: 18px 36px; font-size: 22px; font-weight: bold; text-transform: uppercase; cursor: pointer; border-radius: 6px; box-shadow: 0 5px #8a2b1d; transition: 0.1s; }
-        .wake-up-btn:active { transform: translateY(4px); box-shadow: 0 1px #8a2b1d; }
-        
-        /* 🎮 ИГРОВОЙ ИНТЕРФЕЙС */
+        .wake-up-btn { background-color: #cd412b; color: white; border: none; padding: 18px 36px; font-size: 22px; font-weight: bold; text-transform: uppercase; cursor: pointer; border-radius: 6px; box-shadow: 0 5px #8a2b1d; }
         #game-interface { display: none; max-width: 480px; margin: 0 auto; }
-        
         .tabs { display: flex; justify-content: center; gap: 6px; margin-bottom: 15px; width: 100%; }
-        .tab-btn { background-color: #2b2b35; color: #bbb; border: none; padding: 12px 0; cursor: pointer; font-weight: bold; border-radius: 6px; flex: 1; font-size: 14px; transition: 0.2s; }
+        .tab-btn { background-color: #2b2b35; color: #bbb; border: none; padding: 12px 0; cursor: pointer; font-weight: bold; border-radius: 6px; flex: 1; font-size: 14px; }
         .tab-btn.active { background-color: #cd412b; color: #fff; box-shadow: 0 3px 6px rgba(205,65,43,0.3); }
-        
-        /* ФИКСИРОВАННЫЕ БЛОКИ (ЗАЩИТА ОТ ДРЫГАНИЯ) */
         .section { display: none; background: #22222a; padding: 20px; border-radius: 12px; width: 100%; min-height: 380px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #2d2d38; }
         .section.active { display: block; }
-        
-        /* Контейнер для картинки с фиксированной высотой */
         .image-container { height: 200px; display: flex; justify-content: center; align-items: center; margin: 10px 0; }
         .click-target { height: 180px; max-width: 100%; object-fit: contain; cursor: pointer; transition: transform 0.05s ease; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5)); }
         .click-target:active { transform: scale(0.92); }
-        
-        /* ИНФО-БОКСЫ И КНОПКИ */
         .upgrade-info-box { background: #2b2b35; border: 1px solid #3a3a47; border-radius: 8px; padding: 12px; margin: 12px auto; width: 100%; max-width: 340px; font-size: 14px; text-align: left; line-height: 1.5; }
-        .btn { background-color: #cd412b; color: white; border: none; padding: 14px 20px; font-size: 16px; cursor: pointer; border-radius: 6px; width: 100%; max-width: 340px; font-weight: bold; box-shadow: 0 4px #8a2b1d; transition: 0.1s; margin-top: 5px; }
-        .btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px #8a2b1d; }
+        .btn { background-color: #cd412b; color: white; border: none; padding: 14px 20px; font-size: 16px; cursor: pointer; border-radius: 6px; width: 100%; max-width: 340px; font-weight: bold; box-shadow: 0 4px #8a2b1d; margin-top: 5px; }
         .btn:disabled { background-color: #3e3e4a; color: #777; box-shadow: none; cursor: not-allowed; }
-        
-        /* 🏆 ТАБЛИЦА ЛИДЕРОВ */
         .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; text-align: left; }
         .leaderboard-table th { background-color: #cd412b; color: white; padding: 10px; font-weight: bold; }
         .leaderboard-table td { padding: 10px; border-bottom: 1px solid #2d2d38; }
@@ -66,7 +51,6 @@
         </div>
         <div class="stats" style="font-size: 26px; font-weight: bold; margin: 10px 0; color: #f0ad4e;">🥫 Скрап: <span id="balance">0</span></div>
         
-        <!-- ВКЛАДКА: ТАП -->
         <div id="tap" class="section active">
             <div style="font-size: 15px; color: #aaa; margin-bottom: 5px;">В руках: <span id="weapon-name" style="color:#fff; font-weight:bold;">Камень</span></div>
             <div class="image-container">
@@ -80,7 +64,6 @@
             <button id="upgrade-weapon" class="btn">Скрафтить инструмент 🔥</button>
             <button id="buy-furnace" class="btn" style="background-color: #4a4a5a; box-shadow: 0 4px #333; margin-top: 10px;">Скрафтить Печку (-60 🥫) [<span id="furnace-count">0</span> шт]</button>
         </div>
-        <!-- ВКЛАДКА: БАЗА -->
         <div id="base" class="section">
             <h3 style="color: #cd412b; margin-bottom: 10px;">⛺ ВАША БАЗА</h3>
             <p style="margin: 10px 0;">МАТЕРИАЛ СТЕН: <span id="wall-type" style="font-weight:bold; color:#f0ad4e;">ДЕРЕВО</span></p>
@@ -89,32 +72,27 @@
             
             <h4 style="margin-top: 25px; color: #f0ad4e;">🏆 ТОП СЕРВЕРА ПО СКРАПУ:</h4>
             <table class="leaderboard-table">
-                <thead>
-                    <tr><th>Место</th><th>Игрок</th><th>Скрап</th></tr>
-                </thead>
+                <thead><tr><th>Место</th><th>Игрок</th><th>Скрап</th></tr></thead>
                 <tbody id="leaderboard-body"></tbody>
             </table>
             <button id="reset-player" class="btn" style="background-color: #333; box-shadow: 0 4px #111; margin-top: 20px; font-size: 13px; padding: 8px;">💀 СБРОСИТЬ ПЕРСОНАЖА</button>
         </div>
 
-        <!-- ВКЛАДКА: РЕЙД -->
         <div id="raid" class="section">
             <h3 style="color: #cd412b; margin-bottom: 10px;">💣 РЕЙДЫ ЧУЖИХ БАЗ</h3>
             <p style="margin: 8px 0;">САЧЕЛИ В ИНВЕНТАРЕ: <span id="satchel-count" style="font-weight:bold; color:#f0ad4e;">0</span> ШТ</p>
             <button id="craft-satchel" class="btn">💣 Скрафтить Сачель (-40 🥫)</button>
             <hr style="border-color: #333; margin: 15px 0;">
             <p style="margin: 8px 0;">ВЗРЫВАЕМ БАЗУ ЧЕМПИОНА: <span id="enemy-hp" style="font-weight:bold; color:#d9534f;">500</span>/500 HP</p>
-            <button id="throw-satchel" class="btn" style="background-color: #d9534f; box-shadow: 0 4px #ac2925;">КИНУТЬ САЧЕЛЬЮ (-45 HP)</button>
+            <button id="throw-satchel" class="btn" style="background-color: #d9534f;">КИНУТЬ САЧЕЛЬЮ (-45 HP)</button>
         </div>
 
-        <!-- ВКЛАДКА: КАЗИНО -->
         <div id="casino" class="section">
-            <h3 style="color: #f0ad4e; margin-bottom: 10px;">🎰 КОЛЕСО СМЕРТИ</h3>
-            <div id="slots-result" style="font-size: 36px; margin: 30px 0; background: #1a1a1f; padding: 15px; border-radius: 8px; border: 1px dashed #3a3a47; letter-spacing: 5px;">🎰 | 🎰 | 🎰</div>
-            <button id="spin-slots" class="btn" style="background-color: #f0ad4e; box-shadow: 0 4px #eea236; color: #000;">КРУТИТЬ СЛОТЫ (-25 🥫)</button>
+            <h3>🎰 КОЛЕСО СМЕРТИ</h3>
+            <div id="slots-result" style="font-size: 36px; margin: 30px 0; background: #1a1a1f; padding: 15px; border-radius: 8px; border: 1px dashed #3a3a47;">🎰 | 🎰 | 🎰</div>
+            <button id="spin-slots" class="btn" style="background-color: #f0ad4e; color: #000;">КРУТИТЬ СЛОТЫ (-25 🥫)</button>
         </div>
     </div>
-
     <script>
         let balance = Number(localStorage.getItem('rust_balance')) || 0;
         let clickPower = Number(localStorage.getItem('rust_clickPower')) || 1;
@@ -133,16 +111,10 @@
         ];
         const baseMaterials = ["ДЕРЕВО", "КАМЕНЬ", "МЕТАЛЛ", "МВК"];
         
-        const welcomeScreen = document.getElementById('welcome-screen');
-        const wakeUpBtn = document.getElementById('wake-up-btn');
-        const gameInterface = document.getElementById('game-interface');
-
-        if (wakeUpBtn) {
-            wakeUpBtn.addEventListener('click', () => {
-                welcomeScreen.style.display = 'none';
-                gameInterface.style.display = 'block';
-            });
-        }
+        document.getElementById('wake-up-btn').addEventListener('click', () => {
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('game-interface').style.display = 'block';
+        });
 
         window.openTab = function(tabId) {
             document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
@@ -161,15 +133,11 @@
             localStorage.setItem('rust_satchels', satchels);
             localStorage.setItem('rust_enemyHp', enemyHp);
         }
+
         function renderLeaderboard() {
             const tbody = document.getElementById('leaderboard-body');
             if(!tbody) return;
-            const bots = [
-                { name: "X_Sniper_X", scrap: 15000 },
-                { name: "ScrapQueen", scrap: 5500 },
-                { name: "OilRig_Boss", scrap: 2500 },
-                { name: "Golyi_Na_Plyazhe", scrap: 120 }
-            ];
+            const bots = [{ name: "X_Sniper_X", scrap: 15000 }, { name: "ScrapQueen", scrap: 5500 }, { name: "OilRig_Boss", scrap: 2500 }, { name: "Golyi_Na_Plyazhe", scrap: 120 }];
             bots.push({ name: "Вы (Выживший)", scrap: Math.floor(balance), isMe: true });
             bots.sort((a, b) => b.scrap - a.scrap);
             tbody.innerHTML = "";
@@ -188,7 +156,6 @@
             if(weaponLevel < weapons.length) {
                 document.getElementById('weapon-name').textContent = weapons[weaponLevel].name;
                 document.getElementById('character').src = weapons[weaponLevel].img;
-                
                 let nextIndex = weaponLevel + 1;
                 if (nextIndex < weapons.length) {
                     document.getElementById('upgrade-info-container').style.display = 'block';
@@ -218,22 +185,17 @@
             document.getElementById('craft-satchel').disabled = balance < 40;
             document.getElementById('throw-satchel').disabled = satchels <= 0 || enemyHp <= 0;
             document.getElementById('spin-slots').disabled = balance < 25;
-            
             renderLeaderboard();
             saveGame();
         }
 
         document.getElementById('character').addEventListener('click', () => { balance += clickPower; updateUI(); });
-        
         document.getElementById('upgrade-weapon').addEventListener('click', () => {
             if (weaponLevel < weapons.length && balance >= weapons[weaponLevel].cost) {
-                balance -= weapons[weaponLevel].cost;
-                weaponLevel++;
-                clickPower = (weaponLevel < weapons.length) ? weapons[weaponLevel].power : 50;
-                updateUI();
+                balance -= weapons[weaponLevel].cost; weaponLevel++;
+                clickPower = (weaponLevel < weapons.length) ? weapons[weaponLevel].power : 50; updateUI();
             }
         });
-
         document.getElementById('buy-furnace').addEventListener('click', () => { if (balance >= 60) { balance -= 60; furnaces++; updateUI(); } });
         document.getElementById('upgrade-base').addEventListener('click', () => { if (balance >= 50 && baseLevel < 3) { balance -= 50; baseLevel++; baseHp += 100; updateUI(); } });
         document.getElementById('craft-satchel').addEventListener('click', () => { if (balance >= 40) { balance -= 40; satchels++; updateUI(); } });
@@ -257,14 +219,9 @@
                 updateUI();
             }
         });
-
         document.getElementById('reset-player').addEventListener('click', () => {
-            if(confirm("Точно обнулиться?")) { 
-                balance = 0; clickPower = 1; weaponLevel = 0; furnaces = 0; baseLevel = 0; baseHp = 100; satchels = 0; enemyHp = 500; 
-                localStorage.clear(); updateUI(); 
-            }
+            if(confirm("Точно обнулиться?")) { balance = 0; clickPower = 1; weaponLevel = 0; furnaces = 0; baseLevel = 0; baseHp = 100; satchels = 0; enemyHp = 500; localStorage.clear(); updateUI(); }
         });
-
         setInterval(() => { balance += furnaces; updateUI(); }, 1000);
         updateUI();
     </script>
