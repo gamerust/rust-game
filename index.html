@@ -6,34 +6,38 @@
     <title>Rust: Massive Clicker</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            background-color: #1a1a1f; color: #fff; font-family: 'Segoe UI', Arial, sans-serif;
-            text-align: center; user-select: none; width: 100vw; min-height: 100vh; padding: 15px;
-        }
-        h1 { color: #cd412b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); margin-bottom: 10px; font-size: 26px; }
-        #welcome-screen { 
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.95)), url('https://unsplash.com') no-repeat center center/cover; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; 
-        }
-        .wake-up-btn { background-color: #cd412b; color: white; border: none; padding: 18px 36px; font-size: 22px; font-weight: bold; text-transform: uppercase; cursor: pointer; border-radius: 6px; box-shadow: 0 5px #8a2b1d; }
-        #game-interface { display: none; max-width: 480px; margin: 0 auto; }
-        .tabs { display: flex; justify-content: center; gap: 6px; margin-bottom: 15px; width: 100%; }
-        .tab-btn { background-color: #2b2b35; color: #bbb; border: none; padding: 12px 0; cursor: pointer; font-weight: bold; border-radius: 6px; flex: 1; font-size: 14px; }
-        .tab-btn.active { background-color: #cd412b; color: #fff; box-shadow: 0 3px 6px rgba(205,65,43,0.3); }
-        .section { display: none; background: #22222a; padding: 20px; border-radius: 12px; width: 100%; min-height: 380px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #2d2d38; }
-        .section.active { display: block; }
-        .image-container { height: 200px; display: flex; justify-content: center; align-items: center; margin: 10px 0; }
-        .click-target { height: 180px; max-width: 100%; object-fit: contain; cursor: pointer; transition: transform 0.05s ease; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5)); }
+        html, body { width: 100%; height: 100%; overflow: hidden; background-color: #121214; }
+        body { color: #fff; font-family: 'Segoe UI', Arial, sans-serif; display: flex; flex-direction: column; justify-content: space-between; padding: 10px; }
+        h1 { color: #cd412b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); font-size: 24px; margin-bottom: 5px; text-align: center; }
+        #welcome-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('https://unsplash.com') no-repeat center center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
+        .wake-up-btn { background-color: #cd412b; color: white; border: none; padding: 20px 40px; font-size: 22px; font-weight: bold; text-transform: uppercase; cursor: pointer; border-radius: 6px; box-shadow: 0 5px #8a2b1d; }
+        #game-interface { display: none; width: 100%; height: 100%; flex-direction: column; justify-content: space-between; }
+        .tabs { display: flex; justify-content: center; gap: 4px; width: 100%; margin-bottom: 5px; }
+        .tab-btn { background-color: #22222a; color: #aaa; border: none; padding: 12px 0; cursor: pointer; font-weight: bold; border-radius: 6px; flex: 1; font-size: 13px; }
+        .tab-btn.active { background-color: #cd412b; color: #fff; }
+        .section { display: none; background: #1a1a22; padding: 15px; border-radius: 10px; width: 100%; flex-grow: 1; border: 1px solid #2d2d38; overflow-y: auto; }
+        .section.active { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .image-container { height: 45vh; display: flex; justify-content: center; align-items: center; margin: 5px 0; width: 100%; }
+        .click-target { height: 100%; max-height: 260px; object-fit: contain; cursor: pointer; transition: transform 0.05s ease; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.6)); }
         .click-target:active { transform: scale(0.92); }
-        .upgrade-info-box { background: #2b2b35; border: 1px solid #3a3a47; border-radius: 8px; padding: 12px; margin: 12px auto; width: 100%; max-width: 340px; font-size: 14px; text-align: left; line-height: 1.5; }
-        .btn { background-color: #cd412b; color: white; border: none; padding: 14px 20px; font-size: 16px; cursor: pointer; border-radius: 6px; width: 100%; max-width: 340px; font-weight: bold; box-shadow: 0 4px #8a2b1d; margin-top: 5px; }
-        .btn:disabled { background-color: #3e3e4a; color: #777; box-shadow: none; cursor: not-allowed; }
-        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; text-align: left; }
-        .leaderboard-table th { background-color: #cd412b; color: white; padding: 10px; font-weight: bold; }
-        .leaderboard-table td { padding: 10px; border-bottom: 1px solid #2d2d38; }
-        .leaderboard-table tr:nth-child(even) { background-color: #2b2b35; }
-        .leaderboard-table tr.me { background-color: rgba(205,65,43,0.15); border: 1px solid #cd412b; }
+        .upgrade-info-box { background: #22222a; border: 1px solid #3a3a47; border-radius: 8px; padding: 10px; margin: 10px auto; width: 100%; max-width: 360px; font-size: 14px; text-align: left; line-height: 1.4; }
+        .btn { background-color: #cd412b; color: white; border: none; padding: 14px 20px; font-size: 16px; cursor: pointer; border-radius: 6px; width: 100%; max-width: 360px; font-weight: bold; box-shadow: 0 4px #8a2b1d; }
+        .btn:disabled { background-color: #333; color: #666; box-shadow: none; cursor: not-allowed; }
+        
+        /* Стили для иконок ресурсов (Заготовка под картинки) */
+        .res-icon { width: 24px; height: 24px; vertical-align: middle; margin-right: 5px; display: inline-block; }
+        
+        /* ТЕКСТ РЕЗУЛЬТАТА КАЗИНО */
+        .casino-status { font-size: 18px; font-weight: bold; margin-top: 15px; height: 25px; min-width: 200px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .casino-win { color: #5cb85c; }
+        .casino-lose { color: #d9534f; }
+        .casino-neutral { color: #aaa; }
+
+        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 15px; text-align: left; }
+        .leaderboard-table th { background-color: #cd412b; color: white; padding: 12px 10px; font-weight: bold; }
+        .leaderboard-table td { padding: 12px 10px; border-bottom: 1px solid #2d2d38; }
+        .leaderboard-table tr:nth-child(even) { background-color: #22222a; }
+        .leaderboard-table tr.me { background-color: rgba(205,65,43,0.2); border: 2px solid #cd412b; }
     </style>
 </head>
 <body>
@@ -48,11 +52,17 @@
             <button class="tab-btn" onclick="openTab('base')">⛺ База</button>
             <button class="tab-btn" onclick="openTab('raid')">💣 Рейд</button>
             <button class="tab-btn" onclick="openTab('casino')">🎰 Каз</button>
+            <button class="tab-btn" onclick="openTab('top-players')">🏆 Топ</button>
         </div>
-        <div class="stats" style="font-size: 26px; font-weight: bold; margin: 10px 0; color: #f0ad4e;">🥫 Скрап: <span id="balance">0</span></div>
         
+        <!-- Счётчик Скрапа (С заготовкой под картинку) -->
+        <div class="stats" style="font-size: 26px; font-weight: bold; margin: 5px 0; text-align:center; color: #f0ad4e;">
+            <span id="scrap-img-place">🥫</span> Скрап: <span id="balance">0</span>
+        </div>
+        
+        <!-- ВКЛАДКА: ТАП -->
         <div id="tap" class="section active">
-            <div style="font-size: 15px; color: #aaa; margin-bottom: 5px;">В руках: <span id="weapon-name" style="color:#fff; font-weight:bold;">Камень</span></div>
+            <div style="font-size: 15px; color: #aaa; margin-bottom: 2px;">В руках: <span id="weapon-name" style="color:#fff; font-weight:bold;">Камень</span></div>
             <div class="image-container">
                 <img id="character" class="click-target" src="https://thunderstore.io" alt="Оружие">
             </div>
@@ -62,35 +72,44 @@
                 <div>⚔️ Урон за тап: +<span id="next-weapon-power" style="color: #d9534f;">-</span></div>
             </div>
             <button id="upgrade-weapon" class="btn">Скрафтить инструмент 🔥</button>
-            <button id="buy-furnace" class="btn" style="background-color: #4a4a5a; box-shadow: 0 4px #333; margin-top: 10px;">Скрафтить Печку (-60 🥫) [<span id="furnace-count">0</span> шт]</button>
+            <button id="buy-furnace" class="btn" style="background-color: #4a4a5a; box-shadow: 0 4px #333; margin-top: 8px;">Скрафтить Печку (-60 🥫) [<span id="furnace-count">0</span> шт]</button>
         </div>
+
+        <!-- ВКЛАДКА: БАЗА -->
         <div id="base" class="section">
-            <h3 style="color: #cd412b; margin-bottom: 10px;">⛺ ВАША БАЗА</h3>
-            <p style="margin: 10px 0;">МАТЕРИАЛ СТЕН: <span id="wall-type" style="font-weight:bold; color:#f0ad4e;">ДЕРЕВО</span></p>
-            <p style="margin: 10px 0;">Здоровье базы: <span id="base-hp">100</span>/100 HP</p>
-            <button id="upgrade-base" class="btn">🔨 Улучшить стены базы (-50 🥫)</button>
-            
-            <h4 style="margin-top: 25px; color: #f0ad4e;">🏆 ТОП СЕРВЕРА ПО СКРАПУ:</h4>
+            <h3 style="color: #cd412b; margin-bottom: 15px;">⛺ ВАША БАЗА</h3>
+            <p style="margin: 10px 0; font-size: 18px;">МАТЕРИАЛ СТЕН: <span id="wall-type" style="font-weight:bold; color:#f0ad4e;">ДЕРЕВО</span></p>
+            <p style="margin: 10px 0; font-size: 18px;">Здоровье базы: <span id="base-hp">100</span>/100 HP</p>
+            <button id="upgrade-base" class="btn" style="margin-top: 15px;">🔨 Улучшить стены базы (-50 🥫)</button>
+            <button id="reset-player" class="btn" style="background-color: #333; box-shadow: 0 4px #111; margin-top: 40px; font-size: 13px; padding: 8px;">💀 СБРОСИТЬ ПЕРСОНАЖА</button>
+        </div>
+
+        <!-- ВКЛАДКА: РЕЙД -->
+        <div id="raid" class="section">
+            <h3 style="color: #cd412b; margin-bottom: 15px;">💣 РЕЙДЫ ЧУЖИХ БАЗ</h3>
+            <p style="margin: 10px 0; font-size: 18px;"><span>💣</span> САЧЕЛИ В ИНВЕНТАРЕ: <span id="satchel-count" style="font-weight:bold; color:#f0ad4e;">0</span> ШТ</p>
+            <button id="craft-satchel" class="btn" style="margin-top: 10px;">💣 Скрафтить Сачель (-40 🥫)</button>
+            <hr style="border-color: #333; width: 100%; margin: 20px 0;">
+            <p style="margin: 10px 0; font-size: 18px;">БАЗА ЧЕМПИОНА: <span id="enemy-hp" style="font-weight:bold; color:#d9534f;">500</span>/500 HP</p>
+            <button id="throw-satchel" class="btn" style="background-color: #d9534f; box-shadow: 0 4px #ac2925; margin-top: 10px;">КИНУТЬ САЧЕЛЬЮ (-45 HP)</button>
+        </div>
+
+        <!-- ВКЛАДКА: КАЗИНО (С текстовым выводом побед/проигрышей) -->
+        <div id="casino" class="section">
+            <h3 style="color: #f0ad4e; margin-bottom: 15px;">🎰 КОЛЕСО СМЕРТИ</h3>
+            <div id="slots-result" style="font-size: 42px; margin: 20px 0; background: #121214; padding: 20px; border-radius: 8px; border: 1px dashed #3a3a47; letter-spacing: 5px;">🎰 | 🎰 | 🎰</div>
+            <button id="spin-slots" class="btn" style="background-color: #f0ad4e; box-shadow: 0 4px #eea236; color: #000;">КРУТИТЬ СЛОТЫ (-25 🥫)</button>
+            <!-- Место для надписи выигрыша/проигрыша -->
+            <div id="casino-status-text" class="casino-status casino-neutral">Испытай свою удачу!</div>
+        </div>
+
+        <!-- ОТДЕЛЬНАЯ ВКЛАДКА: ТОП -->
+        <div id="top-players" class="section">
+            <h3 style="color: #f0ad4e; margin-bottom: 15px;">🏆 ТОП СЕРВЕРА ПО СКРАПУ</h3>
             <table class="leaderboard-table">
                 <thead><tr><th>Место</th><th>Игрок</th><th>Скрап</th></tr></thead>
                 <tbody id="leaderboard-body"></tbody>
             </table>
-            <button id="reset-player" class="btn" style="background-color: #333; box-shadow: 0 4px #111; margin-top: 20px; font-size: 13px; padding: 8px;">💀 СБРОСИТЬ ПЕРСОНАЖА</button>
-        </div>
-
-        <div id="raid" class="section">
-            <h3 style="color: #cd412b; margin-bottom: 10px;">💣 РЕЙДЫ ЧУЖИХ БАЗ</h3>
-            <p style="margin: 8px 0;">САЧЕЛИ В ИНВЕНТАРЕ: <span id="satchel-count" style="font-weight:bold; color:#f0ad4e;">0</span> ШТ</p>
-            <button id="craft-satchel" class="btn">💣 Скрафтить Сачель (-40 🥫)</button>
-            <hr style="border-color: #333; margin: 15px 0;">
-            <p style="margin: 8px 0;">ВЗРЫВАЕМ БАЗУ ЧЕМПИОНА: <span id="enemy-hp" style="font-weight:bold; color:#d9534f;">500</span>/500 HP</p>
-            <button id="throw-satchel" class="btn" style="background-color: #d9534f;">КИНУТЬ САЧЕЛЬЮ (-45 HP)</button>
-        </div>
-
-        <div id="casino" class="section">
-            <h3>🎰 КОЛЕСО СМЕРТИ</h3>
-            <div id="slots-result" style="font-size: 36px; margin: 30px 0; background: #1a1a1f; padding: 15px; border-radius: 8px; border: 1px dashed #3a3a47;">🎰 | 🎰 | 🎰</div>
-            <button id="spin-slots" class="btn" style="background-color: #f0ad4e; color: #000;">КРУТИТЬ СЛОТЫ (-25 🥫)</button>
         </div>
     </div>
     <script>
@@ -105,21 +124,21 @@
 
         const weapons = [
             { name: "Камень", cost: 15, power: 1, img: "https://thunderstore.io" },
-            { name: "Каменный топор", cost: 100, power: 3, img: "https://facepunch.com" },
-            { name: "Ледоруб", cost: 500, power: 10, img: "https://facepunch.com" },
-            { name: "Штурмовая винтовка (АК-47)", cost: 2000, power: 50, img: "https://facepunch.com" }
+            { name: "Каменная кирка", cost: 100, power: 3, img: "https://facepunch.com" },
+            { name: "Железная кирка", cost: 500, power: 12, img: "https://facepunch.com" },
+            { name: "Ледоруб", cost: 2500, power: 60, img: "https://facepunch.com" }
         ];
         const baseMaterials = ["ДЕРЕВО", "КАМЕНЬ", "МЕТАЛЛ", "МВК"];
         
         document.getElementById('wake-up-btn').addEventListener('click', () => {
             document.getElementById('welcome-screen').style.display = 'none';
-            document.getElementById('game-interface').style.display = 'block';
+            document.getElementById('game-interface').style.display = 'flex';
         });
 
         window.openTab = function(tabId) {
             document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabId).style.display = 'block';
+            document.getElementById(tabId).style.display = 'flex';
             event.currentTarget.classList.add('active');
         };
 
@@ -137,7 +156,7 @@
         function renderLeaderboard() {
             const tbody = document.getElementById('leaderboard-body');
             if(!tbody) return;
-            const bots = [{ name: "X_Sniper_X", scrap: 15000 }, { name: "ScrapQueen", scrap: 5500 }, { name: "OilRig_Boss", scrap: 2500 }, { name: "Golyi_Na_Plyazhe", scrap: 120 }];
+            const bots = [{ name: "X_Sniper_X", scrap: 20000 }, { name: "ScrapQueen", scrap: 7500 }, { name: "OilRig_Boss", scrap: 3000 }, { name: "Golyi_Na_Plyazhe", scrap: 120 }];
             bots.push({ name: "Вы (Выживший)", scrap: Math.floor(balance), isMe: true });
             bots.sort((a, b) => b.scrap - a.scrap);
             tbody.innerHTML = "";
@@ -165,13 +184,13 @@
                     document.getElementById('upgrade-weapon').disabled = balance < weapons[weaponLevel].cost;
                 } else {
                     document.getElementById('upgrade-info-container').style.display = 'block';
-                    document.getElementById('next-weapon-name').textContent = "АК-47 (МАКС)";
+                    document.getElementById('next-weapon-name').textContent = "Ледоруб (МАКС)";
                     document.getElementById('next-weapon-cost').textContent = weapons[weaponLevel].cost;
-                    document.getElementById('next-weapon-power').textContent = "50";
+                    document.getElementById('next-weapon-power').textContent = "60";
                     document.getElementById('upgrade-weapon').disabled = balance < weapons[weaponLevel].cost;
                 }
             } else {
-                document.getElementById('weapon-name').textContent = "Штурмовая винтовка (АК-47)";
+                document.getElementById('weapon-name').textContent = "Ледоруб (Максимум)";
                 document.getElementById('character').src = weapons[weapons.length - 1].img;
                 document.getElementById('upgrade-info-container').style.display = 'none';
                 document.getElementById('upgrade-weapon').style.display = 'none';
@@ -193,7 +212,7 @@
         document.getElementById('upgrade-weapon').addEventListener('click', () => {
             if (weaponLevel < weapons.length && balance >= weapons[weaponLevel].cost) {
                 balance -= weapons[weaponLevel].cost; weaponLevel++;
-                clickPower = (weaponLevel < weapons.length) ? weapons[weaponLevel].power : 50; updateUI();
+                clickPower = (weaponLevel < weapons.length) ? weapons[weaponLevel].power : 60; updateUI();
             }
         });
         document.getElementById('buy-furnace').addEventListener('click', () => { if (balance >= 60) { balance -= 60; furnaces++; updateUI(); } });
@@ -206,19 +225,42 @@
                 updateUI();
             }
         });
+
+        // 🎰 ОБНОВЛЕННАЯ ЛОГИКА КАЗИНО С ТЕКСТОМ НА ЭКРАНЕ
         document.getElementById('spin-slots').addEventListener('click', () => {
             if (balance >= 25) {
-                balance -= 25; const icons = ["🥫", "⛏", "💣", "💀"];
+                balance -= 25;
+                const icons = ["🥫", "⛏", "💣", "💀"];
                 const s1 = icons[Math.floor(Math.random()*4)], s2 = icons[Math.floor(Math.random()*4)], s3 = icons[Math.floor(Math.random()*4)];
                 document.getElementById('slots-result').textContent = `${s1} | ${s2} | ${s3}`;
+                
+                const statusText = document.getElementById('casino-status-text');
+                statusText.className = "casino-status"; // Сброс классов цвета
+
                 if (s1 === s2 && s2 === s3) {
-                    if (s1 === "🥫") { balance += 300; alert("Джекпот скрапа! +300 🥫"); }
-                    else if (s1 === "💣") { satchels += 5; alert("Милитари дроп! +5 Сачелей! 💣"); }
-                    else if (s1 === "💀") { balance = 0; alert("Вы подорвались на мине! Скрап потерян! 💀"); }
+                    if (s1 === "🥫") { 
+                        balance += 300; 
+                        statusText.textContent = "💥 ДЖЕКПОТ! +300 скрапа!";
+                        statusText.classList.add("casino-win");
+                    }
+                    else if (s1 === "💣") { 
+                        satchels += 5; 
+                        statusText.textContent = "📦 МИЛИТАРИ ДРОП! +5 сачелей!";
+                        statusText.classList.add("casino-win");
+                    }
+                    else if (s1 === "💀") { 
+                        balance = 0; 
+                        statusText.textContent = "☠️ МИНА! Весь скрап взорван!";
+                        statusText.classList.add("casino-lose");
+                    }
+                } else {
+                    statusText.textContent = "❌ Мимо! Попробуй еще раз.";
+                    statusText.classList.add("casino-lose");
                 }
                 updateUI();
             }
         });
+
         document.getElementById('reset-player').addEventListener('click', () => {
             if(confirm("Точно обнулиться?")) { balance = 0; clickPower = 1; weaponLevel = 0; furnaces = 0; baseLevel = 0; baseHp = 100; satchels = 0; enemyHp = 500; localStorage.clear(); updateUI(); }
         });
